@@ -9,10 +9,10 @@ import sys
 
 # Main function
 def main():
-    language = {'zh': 'chinese', 'en': 'english', 'de': 'german', 'is': 'icelandic', 'it': 'italian', 'ja': 'japanese', 'ko': 'korea', 'ku': 'kurdish', 'nb': 'norwegian', 'pl': 'polish', 'pt': 'portuguese', 'ru': 'russian', 'sr': 'serbian', 'es': 'spanish', 'sv': 'swedish', 'tr': 'turkish', 'cy': 'welsh'}
+    language = {'zh': 'chinese', 'en': 'english', 'de': 'german', 'is': 'icelandic', 'it': 'italian', 'ku': 'kurdish', 'nb': 'norwegian', 'pl': 'polish', 'pt': 'portuguese', 'ru': 'russian', 'sr': 'serbian', 'es': 'spanish', 'sv': 'swedish', 'tr': 'turkish', 'cy': 'welsh', 'ca': 'catalan', 'fr': 'french'}
     langSystem = systemLanguage()
 
-    parser = argparse.ArgumentParser(description = "Trpy is a command line translator, intended to be as practical and fast as possible. The supported languages are: English, Chinese, German, Italian, Icelandic, Japanese, Korea, Kurdish, Norwegian, Polish, Portuguese, Russian, Serbian, Spanish, Swedish, Turkish, Welsh.")
+    parser = argparse.ArgumentParser(description = "Trpy is a command line translator, intended to be as practical and fast as possible. The supported languages are: English, Chinese, German, Italian, Icelandic, Kurdish, Norwegian, Polish, Portuguese, Russian, Serbian, Spanish, Swedish, Turkish, French, Catalan, Welsh.")
 
     parser.add_argument("-o","--of", type = str, default = None, help = "Language of the text to be translated (it can be shortened, example: 'en' or 'english'), by default it is automatic, but it is not recommended.")
 
