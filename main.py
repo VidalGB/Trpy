@@ -1,8 +1,13 @@
+# Python v3.9.2 more information and dependencies, read requirements.txt
+# Syntax camelCase
+
+# Imports
 import argparse
 from translate import Translator
 from locale import getdefaultlocale
 import sys
 
+# Main function
 def main():
     language = {'zh': 'chinese', 'en': 'english', 'de': 'german', 'is': 'icelandic', 'it': 'italian', 'ja': 'japanese', 'ko': 'korea', 'ku': 'kurdish', 'nb': 'norwegian', 'pl': 'polish', 'pt': 'portuguese', 'ru': 'russian', 'sr': 'serbian', 'es': 'spanish', 'sv': 'swedish', 'tr': 'turkish', 'cy': 'welsh'}
     langSystem = systemLanguage()
@@ -12,7 +17,7 @@ def main():
     parser.add_argument("-o","--of", type = str, default = None, help = "Language of the text to be translated (it can be shortened, example: 'en' or 'english'), by default it is automatic, but it is not recommended.")
 
     parser.add_argument("-t", "--to", type = str, default = f"{language[langSystem]}", help = "Language to translate the text (it can be shortened, example: 'en' or 'english'), by default it is the language of your operating system.")
-    
+
     parser.add_argument("-m", "--message", type = str, default = "", help = 'Text to translate, in quotes "Example".')
 
     args = parser.parse_args()
@@ -36,5 +41,6 @@ def systemLanguage():
     locate = locate[0]
     return locate
 
+# Check script main
 if __name__ == '__main__':
     main()
