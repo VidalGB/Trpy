@@ -4,4 +4,4 @@ __pycache__/
 # Pyinstaller
 build/
 dist/
-Trpy.py
+Trpy.spec
