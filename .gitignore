@@ -1,4 +1,7 @@
+# Python
 venv_translate/
+__pycache__/
+# Pyinstaller
 build/
 dist/
-__pycache__/
+Trpy.py
