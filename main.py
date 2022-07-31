@@ -27,7 +27,7 @@ def main():
     parser.add_argument("-o","--of", type = str, default = None, help = "Language of the text to be translated (it can be abbreviated, example: 'en' or 'english'), by default it is automatic, but it is not recommended.")
 
 # To language argument
-    parser.add_argument("-t", "--to", type = str, default = f"{language[langSystem]}", help = "Language to translate the text (it can be abbreviated, example: 'en' or 'english'), by default it is the language of your operating system.")
+    parser.add_argument("-t", "--to", type = str, default = f"{langSystem}", help = "Language to translate the text (it can be abbreviated, example: 'en' or 'english'), by default it is the language of your operating system.")
 
 # Message argument
     parser.add_argument("-m", "--message", type = str, required = True, help = 'Text to translate, in quotes "Example".')
@@ -167,8 +167,6 @@ def translate(args):
 # Connection Error
     except ConnectionError:
         sys.stdout.write('Connection error, please provide your connection and try again.\n')
-    except RuntimeError:
-        sys.stdout.write('Text too long, the entered text is too long, try reducing it or select another translator (Google example: "-g").\n')
     except:
         sys.stdout.write("Unexpected error, please report this error.\n")
 
