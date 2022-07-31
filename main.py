@@ -6,6 +6,7 @@ import argparse
 from translate import Translator
 from locale import getdefaultlocale
 from requests.exceptions import ConnectionError
+import deep_translator
 from deep_translator import GoogleTranslator, MicrosoftTranslator, MyMemoryTranslator, DeeplTranslator
 import sys
 
@@ -71,9 +72,9 @@ def controlLanguage(args, language):
             translate(args)
     else:
         if not to == [True]:
-            sys.stdout.write(f'The language "{args.to}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.')
+            sys.stdout.write(f'The language "{args.to}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n')
         if not of == [True]:
-            sys.stdout.write(f'The language "{args.of}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.')
+            sys.stdout.write(f'The language "{args.of}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n')
 
 # DeepL translator function
 def deeplTranslate(args):
@@ -86,7 +87,7 @@ def deeplTranslate(args):
                 translation = DeeplTranslator(api_key = authKey, source = "auto", target = args.to, use_free_api = False).translate(args.message)
             else:
                 translation = DeeplTranslator(api_key = authKey, source = args.of, target = args.to, use_free_api = False).translate(args.message)
-            sys.stdout.write(translation)
+            sys.stdout.write(f'{translation}\n')
 
 # DeepL Free
         else:
@@ -95,11 +96,15 @@ def deeplTranslate(args):
                 translation = DeeplTranslator(api_key = authKey, source = "auto", target = args.to, use_free_api = True).translate(args.message)
             else:
                 translation = DeeplTranslator(api_key = authKey, source = args.of, target = args.to, use_free_api = True).translate(args.message)
-            sys.stdout.write(translation)
+            sys.stdout.write(f'{translation}\n')
 
 # Connection Error
     except ConnectionError:
-        sys.stdout.write('Connection error, please provide your connection and try again.')
+        sys.stdout.write('Connection error, please provide your connection and try again.\n')
+    except deep_translator.exceptions.AuthorizationException as key:
+        sys.stdout.write(f'{key}\n')
+    except:
+        sys.stdout.write("Unexpected error, please report this error.\n")
 
 # Google translator function
 def googleTranslate(args):
@@ -108,11 +113,13 @@ def googleTranslate(args):
             translation = GoogleTranslator(source = 'auto', target = args.to).translate(text = args.message)
         else:
             translation = GoogleTranslator(source = args.of, target = args.to).translate(text = args.message)
-        sys.stdout.write(translation)
+        sys.stdout.write(f'{translation}\n')
 
 # Connection Error
     except ConnectionError:
-        sys.stdout.write('Connection error, please provide your connection and try again.')
+        sys.stdout.write('Connection error, please provide your connection and try again.\n')
+    except:
+        sys.stdout.write("Unexpected error, please report this error.\n")
 
 # My Memory translator function
 def memoryTranslate(args):
@@ -121,11 +128,13 @@ def memoryTranslate(args):
             sys.stdout.write("MyMemory translator does not have automatic language detection, please add a language with -o or --of (it can be shortened, example: 'en' or 'english'\n")
         else:
             translation = MyMemoryTranslator(source = args.of, target = args.to).translate(args.message)
-            sys.stdout.write(translation)
+            sys.stdout.write(f'{translation}\n')
 
 # Connection Error
     except ConnectionError:
-        sys.stdout.write('Connection error, please provide your connection and try again.')
+        sys.stdout.write('Connection error, please provide your connection and try again.\n')
+    except:
+        sys.stdout.write("Unexpected error, please report this error.\n")
 
 # Microsoft translator function
 def microsoftTranslate(args):
@@ -135,11 +144,16 @@ def microsoftTranslate(args):
             translation = MicrosoftTranslator(api_key = authKey, source = "auto", target = args.to).translate(text = args.message)
         else:
             translation = MicrosoftTranslator(api_key = authKey, source = args.of, target = args.to).translate(text = args.message)
-        sys.stdout.write(translation)
+        sys.stdout.write(f'{translation}\n')
 
 # Connection Error
     except ConnectionError:
-        sys.stdout.write('Connection error, please provide your connection and try again.')
+        sys.stdout.write('Connection error, please provide your connection and try again.\n')
+    except deep_translator.exceptions.MicrosoftAPIerror as key:
+        sys.stdout.write(f'Unauthorized access with this api key\n')
+    except:
+        sys.stdout.write("Unexpected error, please report this error.\n")
+
 
 # Translator function
 def translate(args):
@@ -148,11 +162,15 @@ def translate(args):
         if not args.of == None:
             translator = Translator(from_lang = args.of,to_lang = args.to)
         translation = translator.translate(args.message)
-        sys.stdout.write(translation)
+        sys.stdout.write(f'{translation}\n')
 
 # Connection Error
     except ConnectionError:
-        sys.stdout.write('Connection error, please provide your connection and try again.')
+        sys.stdout.write('Connection error, please provide your connection and try again.\n')
+    except RuntimeError:
+        sys.stdout.write('Text too long, the entered text is too long, try reducing it or select another translator (Google example: "-g").\n')
+    except:
+        sys.stdout.write("Unexpected error, please report this error.\n")
 
 # Function to detect the system language
 def systemLanguage():
