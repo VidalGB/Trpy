@@ -1,4 +1,4 @@
 venv_translate/
-idiom.csv
-save.txt
-test.py
+build/
+dist/
+__pycache__/
