@@ -1,6 +1,6 @@
-from deep_translator import GoogleTranslator, MicrosoftTranslator, MyMemoryTranslator, DeeplTranslator
 from translate import Translator
 from requests.exceptions import ConnectionError
+from deep_translator import GoogleTranslator, MicrosoftTranslator, MyMemoryTranslator, DeeplTranslator
 import sys
 
 # DeepL translator function

@@ -1,6 +1,5 @@
 # Python v3.9.2 more information and dependencies, read requirements.txt
-# Syntax camelCase
-
+# Syntax camelCase蟒
 # Imports
 import argparse
 from locale import getdefaultlocale
@@ -15,7 +14,7 @@ def main():
     language = {'zh': 'chinese', 'en': 'english', 'de': 'german', 'it': 'italian', 'pl': 'polish', 'pt': 'portuguese', 'ru': 'russian', 'es': 'spanish', 'sv': 'swedish', 'fr': 'french', None: None}
 
 # Defining name, use and definition
-    parser = argparse.ArgumentParser(prog = 'Trpy', formatter_class = argparse.RawDescriptionHelpFormatter, description = "Trpy is a command line translator, intended to be as practical and fast as possible.\n\nThe supported languages are: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.")
+    parser = argparse.ArgumentParser(prog = 'Trpy', formatter_class = argparse.RawDescriptionHelpFormatter, description = "Trpy is a command line translator, intended to be as practical and fast as possible.\nThe supported languages are: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n\nThis Translator was developed by @VidalGB.\nYou can find the source code at: https://github.com/VidalGB/Trpy")
 
 # Version argument
     parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s 1.0', help = "show program's version number and exit.")
@@ -55,18 +54,13 @@ def controlLanguage(args, language):
     if to == [True] and of == [True]:
 
 # Referring translators
-        if args.d:
-            translators.deeplTranslate(args)
-        elif args.dp:
-            translators.deeplTranslate(args)
-        elif args.g:
-            translators.googleTranslate(args)
-        elif args.mi:
-            translators.microsoftTranslate(args)
-        elif args.me:
-            translators.memoryTranslate(args)
-        else:
-            translators.translate(args)
+        if args.d: translators.deeplTranslate(args)
+        elif args.dp: translators.deeplTranslate(args)
+        elif args.g: translators.googleTranslate(args)
+        elif args.mi: translators.microsoftTranslate(args)
+        elif args.me: translators.memoryTranslate(args)
+        else: translators.translate(args)
+
     else:
         if to != [True]:
             sys.stdout.write(f'The language "{args.to}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n')
