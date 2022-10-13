@@ -1,5 +1,6 @@
 from translate import Translator
 from requests.exceptions import ConnectionError
+import deep_translator
 from deep_translator import (
     GoogleTranslator,
     MicrosoftTranslator,

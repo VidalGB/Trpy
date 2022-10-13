@@ -30,7 +30,7 @@ def main():
     parser = argparse.ArgumentParser(
         prog="Trpy",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="Trpy is a command line translator, intended to be as practical and fast as possible.\nThe supported languages are: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n\nThis Translator was developed by @VidalGB.\nYou can find the source code at: https://github.com/VidalGB/Trpy",
+        description="Trpy is a command line translator and open source, intended to be as practical and fast as possible.\nThe supported languages are: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n\nThis Translator was developed by @VidalGB.\nYou can find the source code at: https://github.com/VidalGB/Trpy",
     )
 
     # Version argument
@@ -38,7 +38,7 @@ def main():
         "-v",
         "--version",
         action="version",
-        version="%(prog)s 1.0",
+        version="%(prog)s 1.0.1",
         help="show program's version number and exit.",
     )
 
@@ -94,7 +94,6 @@ def main():
     # Google translator argument
     parser.add_argument("-g", action="store_true", help="Use the Google translator.")
     args = parser.parse_args()
-    print(args)
 
     controlLanguage(args, language) # Controlling language and referring translators
 
