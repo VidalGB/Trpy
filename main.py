@@ -5,7 +5,7 @@
 import argparse
 from locale import getdefaultlocale
 from src import translators as tr
-from tqdm import tqdm
+import tqdm
 import threading
 import sys
 
@@ -132,13 +132,14 @@ def controlLanguage(args, language):
                 f'The language "{args.of}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n'
             )
     
-    progressBar = tqdm(range(10000), desc ="Prosessing")
+    progressBar = tqdm.tqdm(range(1), desc ="Prosessing")
     while True:
         if not traslator.is_alive():
-            progressBar.close()
+            progressBar._instances.pop().close()
+            
             break
-        progressBar.update(1)
-    
+        progressBar.total()
+        progressBar.update()
 
 
 def systemLanguage():
