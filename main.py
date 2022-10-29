@@ -2,16 +2,15 @@
     Syntax camelCase '''
 
 # Imports
-import argparse
-from locale import getdefaultlocale
+import argparse as arg
 from src import translators as tr
-import tqdm
-import threading
+from src import tools
+from tqdm import tqdm as pb
+import time
 import sys
 
 # Main function
 def main():
-    langSystem = systemLanguage()
 
     # Supported languages
     language = {
@@ -29,23 +28,23 @@ def main():
     }
 
     # Defining name, use and definition
-    parser = argparse.ArgumentParser(
+    app = arg.ArgumentParser(
         prog="Trpy",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        formatter_class=arg.RawDescriptionHelpFormatter,
         description="Trpy is a command line translator and open source, intended to be as practical and fast as possible.\nThe supported languages are: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n\nThis Translator was developed by @VidalGB.\nYou can find the source code at: https://github.com/VidalGB/Trpy",
     )
 
     # Version argument
-    parser.add_argument(
+    app.add_argument(
         "-v",
         "--version",
         action="version",
-        version="%(prog)s 1.0.1",
+        version="%(prog)s 1.0.2",
         help="show program's version number and exit.",
     )
 
     # Of language argument
-    parser.add_argument(
+    app.add_argument(
         "-o",
         "--of",
         type=str,
@@ -54,16 +53,16 @@ def main():
     )
 
     # To language argument
-    parser.add_argument(
+    app.add_argument(
         "-t",
         "--to",
         type=str,
-        default=f"{langSystem}",
+        default=f"{tools.systemLanguage()}",
         help="Language to translate the text (it can be abbreviated, example: 'en' or 'english'), by default it is the language of your operating system.",
     )
 
     # Message argument
-    parser.add_argument(
+    app.add_argument(
         "-m",
         "--message",
         type=str,
@@ -72,89 +71,65 @@ def main():
     )
 
     # DeepL translator argument (free)
-    parser.add_argument(
+    app.add_argument(
         "-d",
         action="store_true",
         help="Use the DeepL translator with auth key in version Free.",
     )
 
     # DeepL translator argument (pro)
-    parser.add_argument(
+    app.add_argument(
         "-dp",
         action="store_true",
         help="Use the DeepL translator with auth key in version Pro.",
     )
 
     # Microsoft translator argument
-    parser.add_argument(
+    app.add_argument(
         "-mi", action="store_true", help="Use the Microsoft translator."
     )
 
     # My memory translator argument
-    parser.add_argument("-me", action="store_true", help="Use the MyMemory translator.")
+    app.add_argument("-me", action="store_true", help="Use the MyMemory translator.")
 
     # Google translator argument
-    parser.add_argument("-g", action="store_true", help="Use the Google translator.")
-    args = parser.parse_args()
+    app.add_argument("-g", action="store_true", help="Use the Google translator.")
+    args = app.parse_args()
+    print(args.to)
 
-    controlLanguage(args, language) # Controlling language and referring translators
-
-
-def controlLanguage(args, language):
-    '''Control language suport'''
-
-    of = [True for key, value in language.items() if args.of == key or args.of == value]
-    to = [True for key, value in language.items() if args.to == key or args.to == value]
-    if to == [True] and of == [True]:
-
+    if tools.controlLanguage(args, language): # Controlling language and referring translators
         # Referring translators
         if args.d:
-            traslator = threading.Thread(target=tr.deeplTranslate, args=(args,))
+            authKey = str(input("Enter the DeepL auth key to continue: "))
+            traslator = tools.ThreadWithReturnValue(target=tr.deeplTranslate, args=(args,authKey))
         elif args.dp:
-            traslator = threading.Thread(target=tr.deeplTranslate, args=(args,))
+            authKey = str(input("Enter the DeepL auth key to continue: "))
+            traslator = tools.ThreadWithReturnValue(target=tr.deeplTranslate, args=(args,authKey))
         elif args.g:
-            traslator = threading.Thread(target=tr.googleTranslate, args=(args,))
+            traslator = tools.ThreadWithReturnValue(target=tr.googleTranslate, args=(args,))
         elif args.mi:
-            traslator = threading.Thread(target=tr.microsoftTranslate, args=(args,))
+            authKey = str(input("Enter the DeepL auth key to continue: "))
+            traslator = tools.ThreadWithReturnValue(target=tr.microsoftTranslate, args=(args,authKey))
         elif args.me:
-            traslator = threading.Thread(target=tr.memoryTranslate, args=(args,))
+            traslator = tools.ThreadWithReturnValue(target=tr.memoryTranslate, args=(args,))
         else:
-            traslator = threading.Thread(target=tr.translate, args=(args,))
+            traslator = tools.ThreadWithReturnValue(target=tr.translate, args=(args,))
         traslator.start()
 
+        progressBar = pb(total=100)
+        while True:
+            if not traslator.is_alive():
+                progressBar.update(100)
+                translation = traslator.join()
+                progressBar._instances.pop().close()
+                break
+            time.sleep(0.1)
+            progressBar.total += 10
+            progressBar.update(10)
+
+        sys.stdout.write(f'\n{translation}')
     else:
-        if to != [True]:
-            sys.stdout.write(
-                f'The language "{args.to}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n'
-            )
-        if of != [True]:
-            sys.stdout.write(
-                f'The language "{args.of}" is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n'
-            )
-    
-    progressBar = tqdm.tqdm(range(1), desc ="Prosessing")
-    while True:
-        if not traslator.is_alive():
-            progressBar._instances.pop().close()
-            
-            break
-        progressBar.total()
-        progressBar.update()
-
-
-def systemLanguage():
-    '''Function to detect the system language'''
-    
-    try:
-        locate = getdefaultlocale()
-        locate = locate[0]
-        locate = locate.split("_")
-        return locate[0]
-
-    except: # Error
-        sys.stdout.write(
-            "Unexpected error when trying to get your language from the operating system (to avoid this error put -t or --to 'your language'), please report this error.\n"
-        )
+        sys.stdout.write(f'A language is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n')
 
 # Check script main
 if __name__ == "__main__":
