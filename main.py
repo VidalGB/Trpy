@@ -1,16 +1,13 @@
-''' Python v3.9.2 more information and dependencies, read requirements.txt
-    Syntax camelCase '''
+''' Python v3.9.2 more information and dependencies, read requirements.txt'''
 
 # Imports
 import argparse as arg
 from src import translators as tr
 from src import tools
-from tqdm import tqdm as pb
-import time
 import sys
 
-# Main function
 def main():
+    '''Main function'''
 
     # Supported languages
     language = {
@@ -39,7 +36,7 @@ def main():
         "-v",
         "--version",
         action="version",
-        version="%(prog)s 1.0.2",
+        version="%(prog)s 1.1.0",
         help="show program's version number and exit.",
     )
 
@@ -57,7 +54,7 @@ def main():
         "-t",
         "--to",
         type=str,
-        default=f"{tools.systemLanguage()}",
+        default=tools.systemLanguage(),
         help="Language to translate the text (it can be abbreviated, example: 'en' or 'english'), by default it is the language of your operating system.",
     )
 
@@ -94,10 +91,11 @@ def main():
 
     # Google translator argument
     app.add_argument("-g", action="store_true", help="Use the Google translator.")
+    
     args = app.parse_args()
-    print(args.to)
 
-    if tools.controlLanguage(args, language): # Controlling language and referring translators
+    if tools.controlLanguage(args, language): # Controlling language
+        
         # Referring translators
         if args.d:
             authKey = str(input("Enter the DeepL auth key to continue: "))
@@ -116,20 +114,11 @@ def main():
             traslator = tools.ThreadWithReturnValue(target=tr.translate, args=(args,))
         traslator.start()
 
-        progressBar = pb(total=100)
-        while True:
-            if not traslator.is_alive():
-                progressBar.update(100)
-                translation = traslator.join()
-                progressBar._instances.pop().close()
-                break
-            time.sleep(0.1)
-            progressBar.total += 10
-            progressBar.update(10)
+        translation = tools.progressBar(traslator)
 
-        sys.stdout.write(f'\n{translation}')
+        sys.stdout.write(' ' + translation + '\n')
     else:
-        sys.stdout.write(f'A language is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n')
+        sys.stdout.write('A language is not supported, please use one of the following languages: Chinese, English, German, Italian, Polish, Portuguese, Russian, Spanish, Swedish, French.\n')
 
 # Check script main
 if __name__ == "__main__":

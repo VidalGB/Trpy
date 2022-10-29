@@ -7,8 +7,9 @@ from deep_translator import (
     MyMemoryTranslator,
     DeeplTranslator,
 )
+import argparse
 
-def deeplTranslate(args: tuple, authKey: str)-> str:
+def deeplTranslate(args: argparse.Namespace, authKey: str)-> str:
     '''DeepL translator function'''
     
     try:
@@ -37,7 +38,7 @@ def deeplTranslate(args: tuple, authKey: str)-> str:
     except ConnectionError: # Connection Error
         return "Connection error, please provide your connection and try again.\n"
     except deep_translator.exceptions.AuthorizationException as key:
-        return f"{key}\n"
+        return key
     except Exception as e:
         return f"Unexpected error, please report this error.\nThe error[{e}]"
 
@@ -81,6 +82,7 @@ def memoryTranslate(args: tuple)-> str:
 
 def microsoftTranslate(args: tuple, authKey: str)-> str:
     '''Microsoft translator function'''
+
     try:
         if args.of == None:
             translation = MicrosoftTranslator(
@@ -92,25 +94,24 @@ def microsoftTranslate(args: tuple, authKey: str)-> str:
             ).translate(text=args.message)
         return translation
 
-    except ConnectionError: # Connection Error
+    except ConnectionError: # Connection error
         return "Connection error, please provide your connection and try again.\n"
-        
-    except deep_translator.exceptions.MicrosoftAPIerror as key:
-        return f"Unauthorized access with this api key\n"
-    except Exception as e:
+    except deep_translator.exceptions.MicrosoftAPIerror: # API key error
+        return f"Unauthorized access with this api key {authKey}\n"
+    except Exception as e: # Error undefined
         return f"Unexpected error, please report this error.\nThe error[{e}]"
 
 
-def translate(args: tuple)-> str:
-    '''Translator function'''
-    
+def translate(args: argparse.Namespace)-> str:
+    '''Translator function default'''
+
     try:
         translator = Translator(to_lang=args.to)
         if not args.of == None:
             translator = Translator(from_lang=args.of, to_lang=args.to)
         translation = translator.translate(args.message)
         return translation
-    except ConnectionError: # Connection Error
+    except ConnectionError: # Connection error
         return "Connection error, please provide your connection and try again.\n"
-    except Exception as e:
+    except Exception as e: # Error undefined
         return f"Unexpected error, please report this error.\nThe error[{e}]"
